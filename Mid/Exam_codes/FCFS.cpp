@@ -13,15 +13,22 @@ int main() {
     cin >> n;
 
     Process p[n];
-    bool done[n];
 
     // Input
     for (int i = 0; i < n; i++) {
         cin >> p[i].pid >> p[i].at >> p[i].bt;
-        done[i] = false;
     }
 
-    int completed = 0, time = 0;
+    // Sort by Arrival Time (simple FCFS rule)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (p[i].at > p[j].at) {
+                swap(p[i], p[j]);
+            }
+        }
+    }
+
+    int time = 0;
 
     string ganttPID[100];
     int ganttTime[100];
@@ -29,59 +36,39 @@ int main() {
 
     ganttTime[g++] = 0;
 
-    while (completed < n) {
+    for (int i = 0; i < n; i++) {
 
-        int idx = -1;
-        int min_bt = 9999;
+        if (time < p[i].at)
+            time = p[i].at;
 
-        for (int i = 0; i < n; i++) {
+        ganttPID[i] = p[i].pid;
 
-            if (p[i].at <= time && !done[i]) {
+        time += p[i].bt;
 
-                if (p[i].bt < min_bt) {
-                    min_bt = p[i].bt;
-                    idx = i;
-                }
-            }
-        }
+        ganttTime[g] = time;
+        g++;
 
-        if (idx != -1) {
-
-            ganttPID[g-1] = p[idx].pid;
-
-            time += p[idx].bt;
-
-            ganttTime[g] = time;
-            g++;
-
-            p[idx].ct = time;
-            p[idx].tat = p[idx].ct - p[idx].at;
-            p[idx].wt = p[idx].tat - p[idx].bt;
-
-            done[idx] = true;
-            completed++;
-
-        } 
-        else {
-            time++;
-        }
+        p[i].ct = time;
+        p[i].tat = p[i].ct - p[i].at;
+        p[i].wt = p[i].tat - p[i].bt;
     }
 
     // Gantt Chart
     cout << "\nGantt Chart:\n";
 
-    for (int i = 0; i < g-1; i++) {
-        cout << "| " << ganttPID[i] << " ";
+    cout << "| ";
+    for (int i = 0; i < n; i++) {
+        cout << ganttPID[i] << " | ";
     }
-    cout << "|\n";
+    cout << "\n";
 
     for (int i = 0; i < g; i++) {
         cout << ganttTime[i] << "\t";
     }
 
+    // Table
     float total_wt = 0, total_tat = 0;
 
-    // Table Output
     cout << "\n\nPID\tAT\tBT\tCT\tTAT\tWT\n";
 
     for (int i = 0; i < n; i++) {
@@ -106,14 +93,11 @@ int main() {
     return 0;
 }
 
-
 /*
 4
 P1 0 8
 P2 1 4
 P3 2 9
 P4 3 5
-
-
 
 */
