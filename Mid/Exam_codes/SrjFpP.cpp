@@ -1,74 +1,82 @@
-#include <iostream>
-#include <climits>
+#include <bits/stdc++.h>
+
 using namespace std;
 
-struct Process {
+struct Process
+{
     string pid;
     int at, bt, rt;
     int ct, tat, wt;
 };
 
-int main() {
+int main()
+{
 
     int n;
     cin >> n;
 
-    int tq;          // Time Quantum
-    cin >> tq;       // <-- NEW INPUT
+    int tq;    // Time Quantum
+    cin >> tq; // <-- NEW INPUT
 
     Process p[n];
 
     // Input
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         cin >> p[i].pid >> p[i].at >> p[i].bt;
         p[i].rt = p[i].bt;
     }
-
+//  number of finished processes   current CPU time
     int complete = 0, time = 0;
     int shortest = -1;
     int min_rt;
-
+    //Gantt Chart Storage
     string ganttPID[200];
     int ganttTime[200];
     int g = 0;
 
     ganttTime[g++] = 0;
 
-    while (complete < n) {
-
+    while (complete < n)
+    {
+     //Srt proecss
         min_rt = INT_MAX;
         shortest = -1;
 
         // Find shortest remaining time
-        for (int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++)
+        {
 
             if (p[i].at <= time &&
                 p[i].rt > 0 &&
-                p[i].rt < min_rt) {
+                p[i].rt < min_rt)
+            {
 
                 min_rt = p[i].rt;
                 shortest = i;
             }
         }
-
-        if (shortest == -1) {
+         //No Process Available
+        if (shortest == -1)
+        {
             time++;
             continue;
         }
 
         // Store process
-        ganttPID[g-1] = p[shortest].pid;
+        ganttPID[g - 1] = p[shortest].pid;
 
         // Run for Time Quantum or remaining time
         int execTime = min(tq, p[shortest].rt);
-
+        // update exe
         p[shortest].rt -= execTime;
         time += execTime;
-
+        //Store Gantt Chart
         ganttTime[g] = time;
         g++;
-
-        if (p[shortest].rt == 0) {
+         //process finish
+        if (p[shortest].rt == 0)
+        {
 
             complete++;
 
@@ -93,9 +101,11 @@ int main() {
 
     string last = ganttPID[0];
 
-    for (int i = 1; i < g-1; i++) {
+    for (int i = 1; i < g - 1; i++)
+    {
 
-        if (ganttPID[i] != last) {
+        if (ganttPID[i] != last)
+        {
 
             cout << "| "
                  << ganttPID[i]
@@ -111,9 +121,11 @@ int main() {
 
     last = ganttPID[0];
 
-    for (int i = 1; i < g-1; i++) {
+    for (int i = 1; i < g - 1; i++)
+    {
 
-        if (ganttPID[i] != last) {
+        if (ganttPID[i] != last)
+        {
 
             cout << ganttTime[i]
                  << "\t";
@@ -122,7 +134,7 @@ int main() {
         }
     }
 
-    cout << ganttTime[g-1];
+    cout << ganttTime[g - 1];
 
     // -------- Table --------
 
@@ -131,7 +143,8 @@ int main() {
 
     cout << "\n\nPID\tAT\tBT\tCT\tTAT\tWT\n";
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
 
         cout << p[i].pid << "\t"
              << p[i].at << "\t"

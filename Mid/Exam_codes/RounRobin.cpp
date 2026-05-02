@@ -1,32 +1,39 @@
 #include <bits/stdc++.h>
 using namespace std;
-struct Process {
+struct Process
+{
     string pid;
     int at, bt, rt;
     int ct, tat, wt;
 };
 
-int main() {
+int main()
+{
 
     int n;
     cin >> n;
 
-    int tq;          // Time Quantum
+    int tq; // Time Quantum
     cin >> tq;
 
     Process p[n];
 
     // Input
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
         cin >> p[i].pid >> p[i].at >> p[i].bt;
         p[i].rt = p[i].bt;
     }
 
     queue<int> q;
+    /*
+    First process enters → executes first
+       Then goes to back if not finished
+    */
 
     int time = 0;
     int complete = 0;
-    bool visited[n] = {false};
+    bool visited[n] = {false};  //checks if process already added to queue
 
     string ganttPID[200];
     int ganttTime[200];
@@ -34,17 +41,22 @@ int main() {
 
     ganttTime[g++] = 0;
 
-    while (complete < n) {
+    while (complete < n)
+    {
 
         // Add arrived processes
-        for (int i = 0; i < n; i++) {
-            if (p[i].at <= time && !visited[i]) {
+        for (int i = 0; i < n; i++)
+        {
+            if (p[i].at <= time && !visited[i])
+            {
                 q.push(i);
                 visited[i] = true;
             }
+            //Adds all processes that have arrived  Ensures each is added only once
         }
-
-        if (q.empty()) {
+    // q empty  CPU is idle → increase time
+        if (q.empty())
+        {
             time++;
             continue;
         }
@@ -52,7 +64,7 @@ int main() {
         int i = q.front();
         q.pop();
 
-        ganttPID[g-1] = p[i].pid;
+        ganttPID[g - 1] = p[i].pid;
 
         int execTime;
 
@@ -60,7 +72,7 @@ int main() {
             execTime = tq;
         else
             execTime = p[i].rt;
-
+        //Reduce remaining time  Move system time forward
         p[i].rt -= execTime;
         time += execTime;
 
@@ -68,17 +80,21 @@ int main() {
         g++;
 
         // Add newly arrived processes
-        for (int j = 0; j < n; j++) {
-            if (p[j].at <= time && !visited[j]) {
+        for (int j = 0; j < n; j++)
+        {
+            if (p[j].at <= time && !visited[j])
+            {
                 q.push(j);
                 visited[j] = true;
             }
         }
 
-        if (p[i].rt > 0) {
+        if (p[i].rt > 0)
+        {
             q.push(i);
         }
-        else {
+        else
+        {
             complete++;
 
             p[i].ct = time;
@@ -97,13 +113,15 @@ int main() {
 
     cout << "| ";
 
-    for (int i = 0; i < g-1; i++) {
+    for (int i = 0; i < g - 1; i++)
+    {
         cout << ganttPID[i] << " | ";
     }
 
     cout << "\n0\t";
 
-    for (int i = 1; i < g; i++) {
+    for (int i = 1; i < g; i++)
+    {
         cout << ganttTime[i] << "\t";
     }
 
@@ -114,7 +132,8 @@ int main() {
 
     cout << "\n\nPID\tAT\tBT\tCT\tTAT\tWT\n";
 
-    for (int i = 0; i < n; i++) {
+    for (int i = 0; i < n; i++)
+    {
 
         cout << p[i].pid << "\t"
              << p[i].at << "\t"
