@@ -1,4 +1,3 @@
-
 #include <iostream>
 using namespace std;
 
@@ -28,7 +27,6 @@ int main() {
     for (int i = 0; i < resource; i++) {
         cin >> available[i];
     }
-
     for (int i = 0; i < process; i++) {
         for (int j = 0; j < resource; j++) {
             remaining[i][j] = maximum[i][j] - allocation[i][j];
@@ -48,23 +46,17 @@ int main() {
         bool found = false;
         for (int i = 0; i < process; i++) {
             if (!finished[i]) {
-
-                bool possible = true;
-
-                for (int j = 0; j < resource; j++) {
-
-                    if (remaining[i][j] > available[j]) {
+                 bool possible = true;
+                 for (int j = 0; j < resource; j++) {
+                     if (remaining[i][j] > available[j]) {
                         possible = false;
                         break;
                     }
                 }
-
-                if (possible) {
-
+                 if (possible) {
                     for (int j = 0; j < resource; j++) {
                         available[j] += allocation[i][j];
                     }
-
                     safeSequence[count] = i;
                     count++;
                     finished[i] = true;
@@ -72,28 +64,20 @@ int main() {
                 }
             }
         }
-
-        if (!found) {
+                   if (!found) {
             cout << "\nSystem is NOT in safe state.\n";
             return 0;
         }
     }
-
-    cout << "\nSystem is in SAFE state.\n";
-
-    cout << "Safe Sequence: ";
-
-    for (int i = 0; i < process; i++) {
-
-        cout << "P" << safeSequence[i];
-
-        if (i != process - 1)
+     cout << "\nSystem is in SAFE state.\n";
+     cout << "Safe Sequence: ";
+     for (int i = 0; i < process; i++) {
+         cout << "P" << safeSequence[i];
+         if (i != process - 1)
             cout << " -> ";
     }
-
-    cout << endl;
-
-    return 0;
+     cout << endl;
+     return 0;
 }
 
 
